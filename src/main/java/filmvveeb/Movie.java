@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Movie {
-    private Genre genre;
+    protected Genre genre;
     protected String title;
     private Director director;
     private Cast cast;
@@ -26,13 +26,13 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public Movie(String title, Genre genre, Director director, Cast cast, LocalDate releaseDate, int rating) {
+    public Movie(String title, Genre genre, Director director, Cast cast, LocalDate releaseDate) {
         this.title = title;
         this.genre = genre;
         this.director = director;
         this.cast = cast;
         this.releaseDate = releaseDate;
-        this.rating = rating;
+//        this.rating = rating;
     }
 
     @Override
@@ -40,7 +40,9 @@ public class Movie {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
-        return Objects.equals(title, movie.title) &&
+        return Objects.equals(
+                title.toLowerCase().replace(" ",""),
+                movie.title.toLowerCase().replace(" ","")) &&
                 Objects.equals(releaseDate, movie.releaseDate);
     }
 

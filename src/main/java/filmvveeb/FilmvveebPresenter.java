@@ -7,6 +7,7 @@ import filmvveeb.people.Director;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,6 +19,7 @@ public class FilmvveebPresenter implements FilmvveebContract.Presenter {
     private String word;
     private LocalDate fromDate;
     private LocalDate toDate;
+    private Genre genre;
 
     public FilmvveebPresenter(FilmvveebContract.View view) {
         this.view = view;
@@ -49,19 +51,22 @@ public class FilmvveebPresenter implements FilmvveebContract.Presenter {
         String[] split = line.split(";");
 //        int movieLength = Integer.parseInt(split[1]);
         String title = split[2];
-        String genre = split[3];
+        if (!split[3].equals("")) {
+            String genreString = split[3];
+            genre = Genre.valueOf(genreString.toUpperCase().replace(" ","_"));
+        }
         Director director = getDirector(split[6]);
         Cast cast = getCast(new String[]{split[4], split[5]});
         int year = Integer.parseInt(split[0]);
         LocalDate date = LocalDate.MIN;
-        return new Movie(title, director, cast, date.withYear(year));
+        return new Movie(title, genre, director, cast, date.withYear(year));
     }
 
     private Director getDirector(String director) {
         try {
-            String[] nameSurname = director.split(", ");
-            String surname = nameSurname[0];
-            String name = nameSurname[1];
+            String[] directorData = director.split(", ");
+            String surname = directorData[0];
+            String name = directorData[1];
             return new Director(name, surname);
         } catch (IndexOutOfBoundsException e) {
 //            System.out.println("director");
@@ -73,9 +78,9 @@ public class FilmvveebPresenter implements FilmvveebContract.Presenter {
         List<Actor> actors = new ArrayList<>();
         try {
             for (String d : data) {
-                String[] actorNameAndSurname = d.split(", ");
-                String actorName = actorNameAndSurname[1];
-                String actorSurname = actorNameAndSurname[0];
+                String[] actorData = d.split(", ");
+                String actorName = actorData[1];
+                String actorSurname = actorData[0];
                 Actor actor = new Actor(actorName, actorSurname);
                 actors.add(actor);
             }
@@ -128,13 +133,16 @@ public class FilmvveebPresenter implements FilmvveebContract.Presenter {
         if (toDate != null) {
             stream = stream.filter(movie -> !movie.releaseDate.isAfter(toDate));
         }
-        //todo if
         lastResult = stream.collect(Collectors.toList());
     }
 
     @Override
-    public void onGenreSort(Genre genre) {
-        //todo
+    public void onGenreChange(String word) {
+        this.word = word;
+        lastResult = movies.stream()
+                .filter(movie -> movie.genre.toString().toLowerCase().contains(word))
+                .collect(Collectors.toList());
+        view.refreshList(lastResult);
     }
 
     @Override

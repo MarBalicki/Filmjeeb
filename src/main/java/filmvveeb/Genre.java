@@ -21,5 +21,9 @@ public enum Genre {
     FAMILY,
     SPORT,
     TEEN,
-    FAITH
+    FAITH,
+    MYSTERY,
+    MUSIC,
+    WESTERNS,
+    SHORT
 }

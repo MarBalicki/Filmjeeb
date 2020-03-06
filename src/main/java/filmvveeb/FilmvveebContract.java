@@ -21,7 +21,7 @@ public class FilmvveebContract {
 
         void onToDateChange(LocalDate newDate);
 
-        void onGenreSort(Genre genre);
+        void onGenreChange(String word);
 
         List<Movie> getLastResult();
     }

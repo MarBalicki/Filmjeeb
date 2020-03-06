@@ -1,6 +1,7 @@
 package filmvveeb;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDate;
@@ -75,14 +76,29 @@ public class FilmvveebWindow implements FilmvveebContract.View {
         frame.add(genreSort);
         genre = new JTextField();
         genre.setBounds(150, 250, 150, FIELD_HEIGHT);
-        genre.addKeyListener(new GenreListener(genre) {
+        genre.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                presenter.onGenreChange(genre.getText());
+            }
 
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
         });
         frame.add(genre);
 
         result = new JList<>();
-        result.setBounds(PADDING, 360, 880, 550);
-        frame.add(result);
+        JScrollPane scrollPane = new JScrollPane(result);
+        scrollPane.setBounds(PADDING, 360, 880, 550);
+        scrollPane.setViewportView(result);
+        frame.add(scrollPane);
 
         frame.setVisible(true);
         presenter.initData();
